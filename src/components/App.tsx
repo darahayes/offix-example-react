@@ -29,13 +29,21 @@ const appPages: AppPage[] = [
 const App: React.FunctionComponent = () => {
   const offixClient = useOffixClient()
 
+  // mega hack where we first create a regular apollo client
+  // So that other hooks and the ApolloProvider component 
+  // do not crash the app when there is no client
   const [apolloClient, setApolloClient ] = useState(() => {
-    return createApolloClient()
+    return createApolloClient() as unknown as ApolloOfflineClient
   })
 
   console.log('app render')
 
-  //@ts-ignore
+  // Hack to check if the apollo client is a regular one
+  // if it is then call offixClient.init() and then
+  // update the client we use with the one from init
+  // this hack ensures we only call init once even though
+  // this component is potentially rendered twice.
+  // Once at startup and again after offixClient.init is finished
   if (!apolloClient.offlineMutation) {
     offixClient.init().then((client) => {
       // @ts-ignore
