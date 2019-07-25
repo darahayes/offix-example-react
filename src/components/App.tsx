@@ -12,6 +12,7 @@ import Home from './Home';
 import List from './TaskList';
 import { home, list } from 'ionicons/icons';
 import { useOffixClient } from '../lib/OffixProvider';
+import NewItem from './Item/NewItem';
 
 const appPages: AppPage[] = [
   {
@@ -62,6 +63,7 @@ const renderApp = () => {
           <IonRouterOutlet>
             <Route path="/:tab(home)" component={Home} exact={true} />
             <Route path="/:tab(home)/list" component={List} exact={true} />
+            <Route path="/newItem" component={NewItem} exact={true}/>
             <Route exact path="/" render={() => <Redirect to="/home" />} />
           </IonRouterOutlet>
         </IonPage>
