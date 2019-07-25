@@ -30,11 +30,14 @@ const appPages: AppPage[] = [
 const App: React.FunctionComponent = () => {
   const offixClient = useOffixClient()
 
-  // First 
-  const [apolloClient, setApolloClient ] = useState(null as unknown as ApolloOfflineClient)
+  // First we initialize a piece of state called apolloClient
+  // It's null at the start
+  const [apolloClient, setApolloClient] = useState(null as unknown as ApolloOfflineClient)
 
   console.log('app render')
 
+  // Inside useEffect, initialize the offix client and set the apollo client
+  // This only happens once.
   useEffect(() => {
     offixClient.init().then((client) => {
       console.log('offline client initialized')
@@ -42,7 +45,7 @@ const App: React.FunctionComponent = () => {
     })
   }, [])
 
-  // load the app if the apolloClient is there.
+  // load the app if the apolloClient is there, otherwise load a loading screen
   if (apolloClient) {
     return (
       <ApolloProvider client={apolloClient}>
