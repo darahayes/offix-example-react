@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonPage, IonReactRouter, IonRouterOutlet, IonSplitPane } from '@ionic/react';
 import { AppPage } from '../declarations';
@@ -12,6 +12,7 @@ import Home from './Home';
 import List from './TaskList';
 import { home, list } from 'ionicons/icons';
 import { useOffixClient } from '../lib/OffixProvider';
+import NewItem from './Item/NewItem';
 
 const appPages: AppPage[] = [
   {
@@ -29,29 +30,22 @@ const appPages: AppPage[] = [
 const App: React.FunctionComponent = () => {
   const offixClient = useOffixClient()
 
-  // mega hack where we first create a regular apollo client
-  // So that other hooks and the ApolloProvider component 
-  // do not crash the app when there is no client
-  const [apolloClient, setApolloClient ] = useState(() => {
-    return createApolloClient() as unknown as ApolloOfflineClient
-  })
+  // First we initialize a piece of state called apolloClient
+  // It's null at the start
+  const [apolloClient, setApolloClient] = useState(null as unknown as ApolloOfflineClient)
 
   console.log('app render')
 
-  // Hack to check if the apollo client is a regular one
-  // if it is then call offixClient.init() and then
-  // update the client we use with the one from init
-  // this hack ensures we only call init once even though
-  // this component is potentially rendered twice.
-  // Once at startup and again after offixClient.init is finished
-  if (!apolloClient.offlineMutation) {
+  // Inside useEffect, initialize the offix client and set the apollo client
+  // This only happens once.
+  useEffect(() => {
     offixClient.init().then((client) => {
-      // @ts-ignore
       console.log('offline client initialized')
       setApolloClient(client)
     })
-  }
+  }, [])
 
+  // load the app if the apolloClient is there, otherwise load a loading screen
   if (apolloClient) {
     return (
       <ApolloProvider client={apolloClient}>
@@ -59,7 +53,7 @@ const App: React.FunctionComponent = () => {
       </ApolloProvider>
     )
   }
-  return renderApp()
+  return <div>Loading...</div>
 }
 
 const renderApp = () => {
@@ -72,6 +66,7 @@ const renderApp = () => {
           <IonRouterOutlet>
             <Route path="/:tab(home)" component={Home} exact={true} />
             <Route path="/:tab(home)/list" component={List} exact={true} />
+            <Route path="/newItem" component={NewItem} exact={true}/>
             <Route exact path="/" render={() => <Redirect to="/home" />} />
           </IonRouterOutlet>
         </IonPage>

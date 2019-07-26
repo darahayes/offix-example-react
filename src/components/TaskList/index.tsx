@@ -3,19 +3,13 @@ import {
   IonContent,
   IonHeader,
   IonIcon,
-  IonItem,
-  IonList,
   IonMenuButton,
   IonTitle,
   IonToolbar,
-  IonCheckbox,
-  IonLabel,
-  IonNote,
-  IonBadge,
   IonButton
 
 } from '@ionic/react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useApolloClient, useQuery } from 'react-apollo-hooks';
 import { GET_TASKS } from '../../client/graphql.queries'
@@ -23,31 +17,32 @@ import TaskList from './TaskList'
 import { Task } from '../../declarations';
 import { TaskService } from '../../services/TaskService';
 import { useOffixClient } from '../../lib/OffixProvider';
-import { ApolloOfflineClient } from 'offix-client';
+import { ApolloOfflineClient, subscribeToMoreHelper } from 'offix-client';
+import { Link } from 'react-router-dom';
 
 const TaskListPage: React.FunctionComponent = () => {
   const client = useApolloClient()
   const offixClient = useOffixClient()
 
+  const [allTasks, updateAllTasks] = useState([] as unknown as [Task])
+
   // TODO - Probably shouldn't have to recreate this all the time
   const taskService = new TaskService(offixClient, client as ApolloOfflineClient)
 
-  const { data, error } = useQuery<any>(GET_TASKS);
+  useEffect(() => {
+    taskService.getItems().subscribe((result : any) => {
+      if (result && !result.errors) {
+        console.log('Result from query', result);
+        updateAllTasks(result.data.allTasks)
+      } else {
+        console.log('error from query', result);
+      }
+    }, (error: any) => {
+      console.log('error from query', error);
+    });
+  }, [])
 
-  const [allTasks, updateAllTasks] = useState([] as unknown as [Task])
-  
-  taskService.getItems().subscribe((result : any) => {
-    if (result && !result.errors) {
-      console.log('Result from query', result);
-      // this.items = result.data && result.data.allTasks;
-    } else {
-      console.log('error from query', result);
-    }
-  }, (error: any) => {
-    console.log('error from query', error);
-  });
-
-  console.log(data)
+  // console.log(data)
 
   return (
     <>
@@ -58,15 +53,17 @@ const TaskListPage: React.FunctionComponent = () => {
           </IonButtons>
           <IonTitle>Manage Tasks</IonTitle>
           <IonButtons slot="primary">
-            <IonButton>
-            <IonIcon slot="icon-only" name="add" />
-          </IonButton>
-      </IonButtons>
+            <Link to="/newItem">
+              <IonButton href="/newItem">
+                <IonIcon slot="icon-only" name="add" />
+              </IonButton>
+            </Link>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
 
       <IonContent>
-        {data && data.allTasks? <TaskList tasks={data.allTasks} taskService={taskService}/> : null}
+        <TaskList tasks={allTasks} taskService={taskService}/>
       </IonContent>
     </>
   );
