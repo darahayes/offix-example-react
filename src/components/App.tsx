@@ -4,7 +4,6 @@ import { IonApp, IonPage, IonReactRouter, IonRouterOutlet, IonSplitPane } from '
 import { AppPage } from '../declarations';
 
 import { ApolloOfflineClient, OfflineClient } from 'offix-client'
-import { createApolloClient } from '../client'
 import { ApolloProvider } from 'react-apollo-hooks'
 
 import Menu from './Menu';
