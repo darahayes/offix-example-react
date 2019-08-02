@@ -11,11 +11,12 @@ import {
   IonButton,
   IonItem,
   IonLabel,
-  IonInput
+  IonInput,
+  IonCard
 
 } from '@ionic/react';
-import { useMutation } from 'react-apollo-hooks';
-import { ADD_TASK } from '../../client/graphql.queries'
+import { useOfflineMutation } from '../../lib/offix-react-hooks/useOfflineMutation';
+import { ADD_TASK, GET_TASKS } from '../../client/graphql.queries'
 
 const NewItem: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
 
@@ -24,18 +25,30 @@ const NewItem: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
 
   const [ formErrors, setFormErrors ] = useState({})
 
-  const [ addTask ] = useMutation(ADD_TASK, {
+  const [ addTask, addTaskInfo ] = useOfflineMutation(ADD_TASK, {
     variables: {
       description,
       title,
-      status: 'OPEN'
-    }
+      status: 'OPEN',
+      version: 1
+    },
+    updateQuery: GET_TASKS,
+    returnType: 'Task'
   })
 
   function submit(e: any) {
     e.preventDefault()
     addTask()
-    history.push('/home/list')
+  }
+
+  function renderMutationInfo() {
+    return (
+      <IonCard>
+        <p>
+          {JSON.stringify(addTaskInfo, null, 2)}
+        </p>
+      </IonCard>
+    )
   }
 
   return (
@@ -54,6 +67,7 @@ const NewItem: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
+      {renderMutationInfo()}
         <form onSubmit={submit}>
           <IonItem>
             <IonLabel color="primary" position="floating">Title</IonLabel>

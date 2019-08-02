@@ -16,7 +16,7 @@ import { GET_TASKS } from '../../client/graphql.queries'
 import TaskList from './TaskList'
 import { Task } from '../../declarations';
 import { TaskService } from '../../services/TaskService';
-import { useOffixClient } from '../../lib/OffixProvider';
+import { useOffixClient } from '../../lib/offix-react-hooks/OffixProvider';
 import { ApolloOfflineClient, subscribeToMoreHelper } from 'offix-client';
 import { Link } from 'react-router-dom';
 

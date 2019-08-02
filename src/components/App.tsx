@@ -11,7 +11,7 @@ import Menu from './Menu';
 import Home from './Home';
 import List from './TaskList';
 import { home, list } from 'ionicons/icons';
-import { useOffixClient } from '../lib/OffixProvider';
+import { useOffixClient } from '../lib/offix-react-hooks/OffixProvider';
 import NewItem from './Item/NewItem';
 
 const appPages: AppPage[] = [
