@@ -23,8 +23,7 @@ const NewItem: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
   const [ title, setTitle ] = useState('')
   const [ description, setDescription ] = useState('')
 
-  const [ formErrors, setFormErrors 
-  ] = useState({})
+  const [ formErrors, setFormErrors ] = useState({})
 
   const [addTask, {
     called,
