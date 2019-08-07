@@ -23,9 +23,20 @@ const NewItem: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
   const [ title, setTitle ] = useState('')
   const [ description, setDescription ] = useState('')
 
-  const [ formErrors, setFormErrors ] = useState({})
+  const [ formErrors, setFormErrors 
+  ] = useState({})
 
-  const [ addTask, addTaskInfo ] = useOfflineMutation(ADD_TASK, {
+  const [addTask, {
+    called,
+    data,
+    error,
+    hasError,
+    loading,
+    mutationVariables,
+    calledWhileOffline,
+    offlineChangeReplicated,
+    offlineReplicationError
+  }] = useOfflineMutation(ADD_TASK, {
     variables: {
       description,
       title,
@@ -45,7 +56,17 @@ const NewItem: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
     return (
       <IonCard>
         <p>
-          {JSON.stringify(addTaskInfo, null, 2)}
+          {JSON.stringify({
+            called,
+            data,
+            error,
+            hasError,
+            loading,
+            mutationVariables,
+            calledWhileOffline,
+            offlineChangeReplicated,
+            offlineReplicationError
+          }, null, 2)}
         </p>
       </IonCard>
     )
