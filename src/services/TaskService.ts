@@ -4,26 +4,20 @@ import {
   GET_TASKS,
   UPDATE_TASK
 } from '../client/graphql.queries';
-import { AllTasks, Task } from '../declarations';
+import { Task } from '../declarations';
 import {
   ApolloOfflineClient,
-  OfflineStore,
   CacheOperation,
-  createMutationOptions,
   subscribeToMoreHelper
 } from 'offix-client';
 import { subscriptionOptions } from '../client/cache.updates';
 import { OfflineClient } from 'offix-client';
-import ApolloClient from 'apollo-client';
-import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 
 export class TaskService {
-  offlineStore: OfflineStore;
   apollo: ApolloOfflineClient;
 
   constructor(offixClient: OfflineClient, apolloClient: ApolloOfflineClient) {
     this.apollo = apolloClient;
-    this.offlineStore = offixClient.offlineStore;
   }
 
   /**
@@ -50,7 +44,7 @@ export class TaskService {
   }
 
   createItem(title:string, description:string) {
-    return this.apollo.offlineMutation({
+    return this.apollo.offlineMutate({
         mutation: ADD_TASK,
         variables: {
           'title': title,
@@ -64,7 +58,7 @@ export class TaskService {
   }
 
   updateItem(item: Task) {
-    return this.apollo.offlineMutation({
+    return this.apollo.offlineMutate({
         mutation: UPDATE_TASK,
         variables: item,
         updateQuery: GET_TASKS,
@@ -75,7 +69,7 @@ export class TaskService {
   }
 
   deleteItem(item: Task) {
-    return this.apollo.offlineMutation({
+    return this.apollo.offlineMutate({
         mutation: DELETE_TASK,
         variables: item,
         updateQuery: GET_TASKS,
@@ -83,10 +77,6 @@ export class TaskService {
         operationType: CacheOperation.DELETE
       }
     );
-  }
-
-  getOfflineItems() {
-    return this.offlineStore.getOfflineData();
   }
 
   getClient() {

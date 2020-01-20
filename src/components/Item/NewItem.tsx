@@ -15,7 +15,7 @@ import {
   IonCard
 
 } from '@ionic/react';
-import { useOfflineMutation } from '../../lib/offix-react-hooks/useOfflineMutation';
+import { useOfflineMutation } from 'react-offix-hooks';
 import { ADD_TASK, GET_TASKS } from '../../client/graphql.queries'
 
 const NewItem: React.FunctionComponent<RouteComponentProps> = ({ history }) => {

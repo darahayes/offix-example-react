@@ -10,8 +10,10 @@ import Menu from './Menu';
 import Home from './Home';
 import List from './TaskList';
 import { home, list } from 'ionicons/icons';
-import { useOffixClient } from '../lib/offix-react-hooks/OffixProvider';
+import { useOffixClient } from 'react-offix-hooks';
 import NewItem from './Item/NewItem';
+import ApolloClient from 'apollo-client';
+import { NormalizedCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 
 const appPages: AppPage[] = [
   {
@@ -38,16 +40,16 @@ const App: React.FunctionComponent = () => {
   // Inside useEffect, initialize the offix client and set the apollo client
   // This only happens once.
   useEffect(() => {
-    offixClient.init().then((client) => {
+    offixClient.init().then((client: any) => {
       console.log('offline client initialized')
-      setApolloClient(client)
+      setApolloClient(client as any)
     })
   }, [])
 
   // load the app if the apolloClient is there, otherwise load a loading screen
   if (apolloClient) {
     return (
-      <ApolloProvider client={apolloClient}>
+      <ApolloProvider client={apolloClient as unknown as ApolloClient<NormalizedCacheObject>}>
         {renderApp()}
       </ApolloProvider>
     )

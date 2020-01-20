@@ -8,6 +8,7 @@ import {
   IonBadge,
   IonIcon
 } from '@ionic/react'
+import { add, create, trash } from 'ionicons/icons'
 import { TaskService } from '../../services/TaskService';
 
 export interface Task {
@@ -77,10 +78,10 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, taskService }) => {
           </IonNote>
         </IonLabel>
         <IonButton item-start  color='primary' fill="outline">
-          <IonIcon name="create"/>
+          <IonIcon icon={create}/>
         </IonButton>
         <IonButton onClick={onDeleteClick(task)} item-start className='trash-button' color='primary' fill="outline">
-          <IonIcon name="trash"/>
+          <IonIcon icon={trash}/>
         </IonButton>
       </IonItem>
     )

@@ -16,9 +16,10 @@ import { GET_TASKS } from '../../client/graphql.queries'
 import TaskList from './TaskList'
 import { Task } from '../../declarations';
 import { TaskService } from '../../services/TaskService';
-import { useOffixClient } from '../../lib/offix-react-hooks/OffixProvider';
+import { useOffixClient } from 'react-offix-hooks';
 import { ApolloOfflineClient, subscribeToMoreHelper } from 'offix-client';
 import { Link } from 'react-router-dom';
+import { add } from 'ionicons/icons'
 
 const TaskListPage: React.FunctionComponent = () => {
   const client = useApolloClient()
@@ -27,9 +28,12 @@ const TaskListPage: React.FunctionComponent = () => {
   const [allTasks, updateAllTasks] = useState([] as unknown as [Task])
 
   // TODO - Probably shouldn't have to recreate this all the time
-  const taskService = new TaskService(offixClient, client as ApolloOfflineClient)
+  const taskService = new TaskService(offixClient as any, client as any)
 
+  // really hacky way to do things coming from the showcase
+  // There's gotta be a cleaner way to do things
   useEffect(() => {
+    taskService.refreshItems()
     taskService.getItems().subscribe((result : any) => {
       if (result && !result.errors) {
         console.log('Result from query', result);
@@ -55,7 +59,7 @@ const TaskListPage: React.FunctionComponent = () => {
           <IonButtons slot="primary">
             <Link to="/newItem">
               <IonButton href="/newItem">
-                <IonIcon slot="icon-only" name="add" />
+                <IonIcon slot="icon-only" icon={add} />
               </IonButton>
             </Link>
           </IonButtons>
